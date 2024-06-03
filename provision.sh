@@ -34,13 +34,6 @@ error_exit() {
     exit 1
 }
 
-check_root() {
-    if [[ $EUID -ne 0 ]]; then
-        echo "This script must be run as root" 1>&2
-        exit 1
-    fi
-}
-
 cleanup() {
     rm -f /tmp/Nessus-10.7.3-raspberrypios_armhf.deb
 }
@@ -50,13 +43,12 @@ get_ip_address() {
 }
 
 print_ascii_art
-check_root
 
-sudo apt-get update -y >/dev/null 2>&1 &
+apt-get update -y >/dev/null 2>&1 &
 show_progress "Updating package lists" $!
 wait $! || error_exit "updating package lists"
 
-sudo apt-get upgrade -y >/dev/null 2>&1 &
+apt-get upgrade -y >/dev/null 2>&1 &
 show_progress "Upgrading installed packages" $!
 wait $! || error_exit "upgrading installed packages"
 
@@ -65,19 +57,19 @@ wget $NESSUS_URL -O /tmp/Nessus-10.7.3-raspberrypios_armhf.deb >/dev/null 2>&1 &
 show_progress "Downloading Nessus" $!
 wait $! || error_exit "downloading Nessus"
 
-sudo dpkg -i /tmp/Nessus-10.7.3-raspberrypios_armhf.deb >/dev/null 2>&1 &
+dpkg -i /tmp/Nessus-10.7.3-raspberrypios_armhf.deb >/dev/null 2>&1 &
 show_progress "Installing Nessus" $!
 wait $! || error_exit "installing Nessus"
 
-sudo apt-get install -f -y >/dev/null 2>&1 &
+apt-get install -f -y >/dev/null 2>&1 &
 show_progress "Fixing dependencies" $!
 wait $! || error_exit "fixing dependencies"
 
-sudo systemctl start nessusd >/dev/null 2>&1 &
+systemctl start nessusd >/dev/null 2>&1 &
 show_progress "Starting Nessus service" $!
 wait $! || error_exit "starting Nessus service"
 
-sudo systemctl enable nessusd >/dev/null 2>&1 &
+systemctl enable nessusd >/dev/null 2>&1 &
 show_progress "Enabling Nessus service" $!
 wait $! || error_exit "enabling Nessus service"
 
@@ -86,5 +78,5 @@ PORT=8834
 
 cleanup
 
-echo "Installation complete."
+echo "Nessus installation and setup complete."
 echo "To complete setup, please go to http://$IP_ADDRESS:$PORT"
