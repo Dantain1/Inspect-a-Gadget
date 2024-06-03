@@ -24,9 +24,9 @@ show_progress() {
     while ps -p $pid > /dev/null 2>&1; do
         sleep "$delay"
         completed=$(( (completed + 1) % (width + 1) ))
-        printf "\r$msg: [%-${width}s]" $(printf "#%.0s" $(seq 1 $completed))
+        printf "\r\033[1;33m$msg:\033[0m \033[1;34m[%-${width}s]\033[0m" $(printf "#%.0s" $(seq 1 $completed))
     done
-    printf "\r$msg: [%-${width}s] \033[0;32mdone\033[0m\n" $(printf "#%.0s" $(seq 1 $width))
+    printf "\r\033[1;33m$msg:\033[0m \033[1;34m[%-${width}s] \033[0;32mdone\033[0m\n" $(printf "#%.0s" $(seq 1 $width))
 }
 
 error_exit() {
@@ -42,6 +42,8 @@ cleanup() {
 get_ip_address() {
     hostname -I | awk '{print $1}'
 }
+
+print_ascii_art
 
 # Update package lists
 update_output=$(sudo apt-get update -y 2>&1)
@@ -86,4 +88,4 @@ PORT=8834
 cleanup
 
 echo "Nessus installation and setup complete."
-echo "Please go here to continue configuration: http://$IP_ADDRESS:$PORT"
+echo -e "Please go here to continue configuration: \033[0;32mhttp://$IP_ADDRESS:$PORT\033[0m"
