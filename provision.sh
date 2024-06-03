@@ -3,7 +3,7 @@
 print_ascii_art() {
     echo -e "\033[0;31m"
     cat << "EOF"
- /$$   /$$ /$$    /$$$$$$$$ /$$$$$$ /$$      /$$  /$$$$$$ 
+/$$   /$$ /$$    /$$$$$$$$ /$$$$$$ /$$      /$$  /$$$$$$ 
 | $$  | $$| $$   |__  $$__/|_  $$_/| $$$    /$$$ /$$__  $$
 | $$  | $$| $$      | $$     | $$  | $$$$  /$$$$| $$  \ $$
 | $$  | $$| $$      | $$     | $$  | $$ $$/$$ $$| $$$$$$$$
@@ -26,7 +26,7 @@ show_progress() {
         completed=$(( (completed + 1) % (width + 1) ))
         printf "\r$msg: [%-${width}s]" $(printf "#%.0s" $(seq 1 $completed))
     done
-    printf "\r$msg: [%-${width}s] done\n" $(printf "#%.0s" $(seq 1 $width))
+    printf "\r$msg: [%-${width}s] \033[0;32mdone\033[0m\n" $(printf "#%.0s" $(seq 1 $width))
 }
 
 error_exit() {
@@ -34,7 +34,23 @@ error_exit() {
     exit 1
 }
 
+check_root() {
+    if [[ $EUID -ne 0 ]]; then
+        echo "This script must be run as root" 1>&2
+        exit 1
+    fi
+}
+
+cleanup() {
+    rm -f /tmp/Nessus-10.7.3-raspberrypios_armhf.deb
+}
+
+get_ip_address() {
+    hostname -I | awk '{print $1}'
+}
+
 print_ascii_art
+check_root
 
 sudo apt-get update -y >/dev/null 2>&1 &
 show_progress "Updating package lists" $!
@@ -65,6 +81,10 @@ sudo systemctl enable nessusd >/dev/null 2>&1 &
 show_progress "Enabling Nessus service" $!
 wait $! || error_exit "enabling Nessus service"
 
-sudo systemctl status nessusd | head -n 10
+IP_ADDRESS=$(get_ip_address)
+PORT=8834
 
-echo "Nessus installation and setup complete."
+cleanup
+
+echo "Installation complete."
+echo "To complete setup, please go to http://$IP_ADDRESS:$PORT"
