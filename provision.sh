@@ -26,7 +26,7 @@ show_progress() {
         completed=$(( (completed + 1) % (width + 1) ))
         printf "\r\033[1;33m$msg:\033[0m \033[1;34m[%-${width}s]\033[0m" $(printf "#%.0s" $(seq 1 $completed))
     done
-    printf "\r\033[1;33m$msg:\033[0m \033[1;34m[%-${width}s] \033[0;32mdone\033[0m\n" $(printf "#%.0s" $(seq 1 $width))
+    printf "\r\033[1;33m$msg:\033[0m \033[1;34m[%-${width}s] \033[0;32mDONE!\033[0m\n" $(printf "#%.0s" $(seq 1 $width))
 }
 
 error_exit() {
@@ -87,5 +87,5 @@ PORT=8834
 
 cleanup
 
-echo "Nessus installation and setup complete."
-echo -e "Please go here to continue configuration: \033[0;32mhttp://$IP_ADDRESS:$PORT\033[0m"
+echo -e "\033[0;32mINSTALLATION COMPLETE!\033[0m"
+echo "Please go here to continue configuration: http://$IP_ADDRESS:$PORT"
