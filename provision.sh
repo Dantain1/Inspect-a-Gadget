@@ -43,16 +43,14 @@ get_ip_address() {
     hostname -I | awk '{print $1}'
 }
 
-print_ascii_art
-
 # Update package lists
-update_output=$(apt-get update -y 2>&1)
+update_output=$(sudo apt-get update -y 2>&1)
 if [[ $? -ne 0 ]]; then
     error_exit "updating package lists" "$update_output"
 fi
 
 # Upgrade installed packages
-apt-get upgrade -y >/dev/null 2>&1 &
+sudo apt-get upgrade -y >/dev/null 2>&1 &
 show_progress "Upgrading installed packages" $!
 wait $! || error_exit "upgrading installed packages"
 
@@ -63,22 +61,22 @@ show_progress "Downloading Nessus" $!
 wait $! || error_exit "downloading Nessus"
 
 # Install Nessus
-dpkg -i /tmp/Nessus-10.7.3-raspberrypios_armhf.deb >/dev/null 2>&1 &
+sudo dpkg -i /tmp/Nessus-10.7.3-raspberrypios_armhf.deb >/dev/null 2>&1 &
 show_progress "Installing Nessus" $!
 wait $! || error_exit "installing Nessus"
 
 # Fix dependencies
-apt-get install -f -y >/dev/null 2>&1 &
+sudo apt-get install -f -y >/dev/null 2>&1 &
 show_progress "Fixing dependencies" $!
 wait $! || error_exit "fixing dependencies"
 
 # Start Nessus service
-systemctl start nessusd >/dev/null 2>&1 &
+sudo systemctl start nessusd >/dev/null 2>&1 &
 show_progress "Starting Nessus service" $!
 wait $! || error_exit "starting Nessus service"
 
 # Enable Nessus service
-systemctl enable nessusd >/dev/null 2>&1 &
+sudo systemctl enable nessusd >/dev/null 2>&1 &
 show_progress "Enabling Nessus service" $!
 wait $! || error_exit "enabling Nessus service"
 
