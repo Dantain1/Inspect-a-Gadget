@@ -1,20 +1,5 @@
 #!/bin/bash
 
-print_ascii_art() {
-    echo -e "\033[0;31m"
-    cat << "EOF"
-/$$   /$$ /$$    /$$$$$$$$ /$$$$$$ /$$      /$$  /$$$$$$ 
-| $$  | $$| $$   |__  $$__/|_  $$_/| $$$    /$$$ /$$__  $$
-| $$  | $$| $$      | $$     | $$  | $$$$  /$$$$| $$  \ $$
-| $$  | $$| $$      | $$     | $$  | $$ $$/$$ $$| $$$$$$$$
-| $$  | $$| $$      | $$     | $$  | $$  $$$| $$| $$__  $$
-| $$  | $$| $$      | $$     | $$  | $$\  $ | $$| $$  | $$
-|  $$$$$$/| $$$$$$$$| $$    /$$$$$$| $$ \/  | $$| $$  | $$
- \______/ |________/|__/   |______/|__/     |__/|__/  |__/
-EOF
-    echo -e "\033[0m"
-}
-
 show_progress() {
     local -r msg="$1"
     local -r pid="$2"
@@ -86,4 +71,4 @@ PORT=8834
 cleanup
 
 echo "Nessus installation and setup complete."
-echo "To complete setup, please go to http://$IP_ADDRESS:$PORT"
+echo "Please go here to continue configuration: http://$IP_ADDRESS:$PORT"
