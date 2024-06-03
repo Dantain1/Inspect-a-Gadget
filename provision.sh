@@ -3,7 +3,7 @@
 print_ascii_art() {
     echo -e "\033[0;31m"
     cat << "EOF"
- /$$   /$$ /$$    /$$$$$$$$ /$$$$$$ /$$      /$$  /$$$$$$ 
+/$$   /$$ /$$    /$$$$$$$$ /$$$$$$ /$$      /$$  /$$$$$$ 
 | $$  | $$| $$   |__  $$__/|_  $$_/| $$$    /$$$ /$$__  $$
 | $$  | $$| $$      | $$     | $$  | $$$$  /$$$$| $$  \ $$
 | $$  | $$| $$      | $$     | $$  | $$ $$/$$ $$| $$$$$$$$
@@ -11,13 +11,9 @@ print_ascii_art() {
 | $$  | $$| $$      | $$     | $$  | $$\  $ | $$| $$  | $$
 |  $$$$$$/| $$$$$$$$| $$    /$$$$$$| $$ \/  | $$| $$  | $$
  \______/ |________/|__/   |______/|__/     |__/|__/  |__/
-                                                          
-                                                          
-                                                          
 EOF
     echo -e "\033[0m"
 }
-
 
 show_progress() {
     local -r msg="$1"
@@ -60,7 +56,7 @@ wait $! || error_exit "upgrading installed packages"
 
 # Download Nessus
 NESSUS_URL="https://www.tenable.com/downloads/api/v2/pages/nessus/files/Nessus-10.7.3-raspberrypios_armhf.deb"
-wget $NESSUS_URL -O /tmp/Nessus-10.7.3-raspberrypios_armhf.deb >/dev/null 2>&1 &
+wget -q $NESSUS_URL -O /tmp/Nessus-10.7.3-raspberrypios_armhf.deb >/dev/null 2>&1 &
 show_progress "Downloading Nessus" $!
 wait $! || error_exit "downloading Nessus"
 
