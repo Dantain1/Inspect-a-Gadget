@@ -1,6 +1,22 @@
 #!/bin/bash
 
-# Function to show progress
+# Function to display ASCII art
+print_ascii_art() {
+    echo -e "\033[0;32m"
+    cat << "EOF"
+ /$$   /$$ /$$    /$$$$$$$$ /$$$$$$ /$$      /$$  /$$$$$$ 
+| $$  | $$| $$   |__  $$__/|_  $$_/| $$$    /$$$ /$$__  $$
+| $$  | $$| $$      | $$     | $$  | $$$$  /$$$$| $$  \ $$
+| $$  | $$| $$      | $$     | $$  | $$ $$/$$ $$| $$$$$$$$
+| $$  | $$| $$      | $$     | $$  | $$  $$$| $$| $$__  $$
+| $$  | $$| $$      | $$     | $$  | $$\  $ | $$| $$  | $$
+|  $$$$$$/| $$$$$$$$| $$    /$$$$$$| $$ \/  | $$| $$  | $$
+ \______/ |________/|__/   |______/|__/     |__/|__/  |__/
+EOF
+    echo -e "\033[0m"
+}
+
+# Function to display a progress bar for a given command
 show_progress() {
     local -r msg="$1"
     local -r pid="$2"
@@ -15,7 +31,7 @@ show_progress() {
     printf "\r\033[1;33m$msg:\033[0m \033[1;34m[%-${width}s] \033[0;32mDONE!\033[0m\n" $(printf "#%.0s" $(seq 1 $width))
 }
 
-# Function to handle errors
+# Function to handle errors and exit
 error_exit() {
     echo "Error during $1. Exiting."
     echo "$2"
@@ -27,34 +43,18 @@ cleanup() {
     rm -f /tmp/Nessus-10.7.3-raspberrypios_armhf.deb
 }
 
-# Function to get IP address
+# Function to get the IP address of the machine
 get_ip_address() {
     hostname -I | awk '{print $1}'
 }
 
-# Function to link Nessus to Tenable.io
+# Function to link Nessus to Tenable.io using the provided linking key
 link_nessus() {
     local linking_key="$1"
     /opt/nessus/sbin/nessuscli managed link --key=$linking_key
     if [[ $? -ne 0 ]]; then
         error_exit "linking Nessus to Tenable.io" "Failed to link Nessus"
     fi
-}
-
-# Print ASCII art
-print_ascii_art() {
-    echo -e "\033[0;31m"
-    cat << "EOF"
-/$$   /$$ /$$    /$$$$$$$$ /$$$$$$ /$$      /$$  /$$$$$$ 
-| $$  | $$| $$   |__  $$__/|_  $$_/| $$$    /$$$ /$$__  $$
-| $$  | $$| $$      | $$     | $$  | $$$$  /$$$$| $$  \ $$
-| $$  | $$| $$      | $$     | $$  | $$ $$/$$ $$| $$$$$$$$
-| $$  | $$| $$      | $$     | $$  | $$  $$$| $$| $$__  $$
-| $$  | $$| $$      | $$     | $$  | $$\  $ | $$| $$  | $$
-|  $$$$$$/| $$$$$$$$| $$    /$$$$$$| $$ \/  | $$| $$  | $$
- \______/ |________/|__/   |______/|__/     |__/|__/  |__/
-EOF
-    echo -e "\033[0m"
 }
 
 # Main script execution
@@ -108,5 +108,6 @@ PORT=8834
 
 cleanup
 
+# Display completion message and configuration URL
 echo -e "\033[0;32mINSTALLATION COMPLETE!\033[0m"
 echo "Please go here to continue configuration: http://$IP_ADDRESS:$PORT"
